@@ -2,7 +2,7 @@
   <div class="goods">
     <div class="menu-wrapper" ref="menuWrapper">
       <ul class="menu">
-        <li v-for="item,index in goods" class="menu-item" :class="{'current':currentIndex===index}"
+        <li v-for="item,index in goods" class="menu-item menu-item-hook" :class="{'current':currentIndex===index}"
             @click="selectMenu(index,$event)">
             <span class="text border-1px">
               <type-icon :size=3 :type="item.type"></type-icon> {{item.name}}
@@ -29,13 +29,17 @@
                   <span class="now">￥{{food.price}}</span><span class="old"
                                                                 v-if="food.oldPrice">￥{{food.oldPrice}}</span>
                 </div>
+                <div class="cartcontrol-wrapper">
+                  <cartcontrol :food="food"></cartcontrol>
+                </div>
               </div>
             </li>
           </ul>
         </li>
       </ul>
     </div>
-    <shopcart></shopcart>
+    <shopcart :select-foods="selectFoods" :delivery-price="seller.deliveryPrice"
+              :min-price="seller.minPrice"></shopcart>
   </div>
 </template>
 
@@ -43,6 +47,7 @@
   import TypeIcon from 'components/typeicon/typeicon';
   import BScroll from 'better-scroll';
   import Shopcart from 'components/shopcart/shopcart';
+  import Cartcontrol from 'components/cartcontrol/cartcontrol';
 
   const ERR_OK = 0;
 
@@ -85,6 +90,7 @@
           click: true
         });
         this.foodScroll = new BScroll(this.$refs.foodWrapper, {
+          click: true,
           probeType: 3
         });
 
@@ -114,11 +120,29 @@
           }
         }
         return 0;
+      },
+      selectFoods () {
+        let foods = [];
+        this.goods.forEach((foodList) => {
+          foodList.foods.forEach((food) => {
+            if (food.count) {
+              foods.push(food);
+            }
+          });
+        });
+        return foods;
+      }
+    },
+    watch: {
+      currentIndex: function (index) {
+        let meunList = this.$refs.menuWrapper.getElementsByClassName('menu-item-hook');
+        this.meunScroll.scrollToElement(meunList[index]);
       }
     },
     components: {
       TypeIcon,
-      Shopcart
+      Shopcart,
+      Cartcontrol
     }
   };
 </script>
@@ -210,5 +234,8 @@
               font-size: 10px
               color: rgb(147, 153, 159)
 
-
+          .cartcontrol-wrapper
+            position: absolute
+            right: 0
+            bottom: 12px
 </style>
