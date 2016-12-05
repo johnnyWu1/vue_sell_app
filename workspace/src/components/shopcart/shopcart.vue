@@ -43,10 +43,10 @@
           </div>
         </div>
       </transition>
+      <transition name="fade">
+        <div class="list-mask" v-show="listShow"></div>
+      </transition>
     </div>
-    <transition name="fade">
-      <div class="list-mask" v-show="listShow"></div>
-    </transition>
   </div>
 </template>
 
@@ -196,16 +196,17 @@
     },
     watch: {
       totalCount (count) {
-        if (count > 0 && this.listShow || (!this.listShow && !this.scroll)) {
-          if (!this.scroll) {
-            this.scroll = new BScroll(this.$refs.listContent, {click: true});
-          } else {
-            this.scroll.refresh();
-          }
+        // if (count > 0 && this.listShow || (!this.listShow && !this.scroll)) {
+        //   this.$nextTick(() => {
+        if (!this.scroll) {
+          this.scroll = new BScroll(this.$refs.listContent, {click: true});
+        } else {
+          this.scroll.refresh();
+          //   }
+          // });
         }
       }
     }
-
   };
 </script>
 
@@ -228,6 +229,7 @@
     bottom: 0
     left: 0
     width: 100%
+    z-index: 300
     height: 48px
     .content
       display: flex
@@ -349,7 +351,6 @@
           float: right
           font-size: 12px
           color: rgb(0, 160, 220)
-
       .list-content
         padding: 0 18px
         max-height: 217px
