@@ -21,18 +21,20 @@
         if (!event._constructed) {
           return;
         }
-        this.food.count--;
+        if (this.food.count > 0) {
+          this.food.count--;
+        }
       },
       addCart (event) {
         if (!event._constructed) {
           return;
         }
-
         if (!this.food.count) {
           this.$set(this.food, 'count', 1);
         } else {
           this.food.count++;
         }
+        this.$emit('cart-add', event.target);
       }
     }
   };
@@ -56,7 +58,7 @@
       font-size: 10px
 
   .cartcontrol
-    .move-enter-active, .move-leave-active
+    .move-enter-active
       transform: translate3D(0, 0, 0) rotate(0)
       transition: all .4s linear
     .move-enter, .move-leave-active

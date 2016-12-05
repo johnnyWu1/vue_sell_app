@@ -30,7 +30,7 @@
                                                                 v-if="food.oldPrice">￥{{food.oldPrice}}</span>
                 </div>
                 <div class="cartcontrol-wrapper">
-                  <cartcontrol :food="food"></cartcontrol>
+                  <cartcontrol @cart-add="_drop" :food="food"></cartcontrol>
                 </div>
               </div>
             </li>
@@ -38,7 +38,7 @@
         </li>
       </ul>
     </div>
-    <shopcart :select-foods="selectFoods" :delivery-price="seller.deliveryPrice"
+    <shopcart ref="shopCart" :select-foods="selectFoods" :delivery-price="seller.deliveryPrice"
               :min-price="seller.minPrice"></shopcart>
   </div>
 </template>
@@ -78,6 +78,11 @@
       });
     },
     methods: {
+      _drop (target) {
+        this.$nextTick(() => {
+          this.$refs.shopCart.drop(target);
+        });
+      },
       selectMenu (index, event) {
         if (!event._constructed) {
           return;
