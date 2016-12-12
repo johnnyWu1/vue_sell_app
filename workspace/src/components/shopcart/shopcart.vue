@@ -127,6 +127,13 @@
           return false;
         }
         let show = !this.fold;
+        this.$nextTick(() => {
+          if (!this.scroll) {
+            this.scroll = new BScroll(this.$refs.listContent, {click: true});
+          } else {
+            this.scroll.refresh();
+          }
+        });
         return show;
       }
     },
@@ -196,15 +203,6 @@
     },
     watch: {
       totalCount (count) {
-        // if (count > 0 && this.listShow || (!this.listShow && !this.scroll)) {
-        //   this.$nextTick(() => {
-        if (!this.scroll) {
-          this.scroll = new BScroll(this.$refs.listContent, {click: true});
-        } else {
-          this.scroll.refresh();
-          //   }
-          // });
-        }
       }
     }
   };
@@ -229,7 +227,7 @@
     bottom: 0
     left: 0
     width: 100%
-    z-index: 300
+    z-index: 1
     height: 48px
     .content
       display: flex

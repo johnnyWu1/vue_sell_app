@@ -1,14 +1,14 @@
 <template>
   <div class="ratingselect">
     <div class="rating-type border-1px">
-      <span class="block all" :class="{'active': selectType == 2}" @click="select(2)">{{desc.all}}<span
-        class="count">99</span></span>
-      <span class="block positive" :class="{'active': selectType == 0}" @click="select(0)">{{desc.positive}}<span
-        class="count">85</span></span>
-      <span class="block negative" :class="{'active': selectType == 1}" @click="select(1)">{{desc.negative}}<span
-        class="count">20</span></span>
+      <span class="block all" :class="{'active': selectType == 2}" @click="select(2,$event)">{{desc.all}}<span
+        class="count">{{ratings.length}}</span></span>
+      <span class="block positive" :class="{'active': selectType == 0}" @click="select(0,$event)">{{desc.positive}}<span
+        class="count">{{positives.length}}</span></span>
+      <span class="block negative" :class="{'active': selectType == 1}" @click="select(1,$event)">{{desc.negative}}<span
+        class="count">{{negatives.length}}</span></span>
     </div>
-    <div class="switch">
+    <div class="switch" :class="{'on': onlyContent}" @click="toggleContent">
       <span class="icon-check_circle"></span>
       <span class="text">只看有内容的评价</span>
     </div>
@@ -16,14 +16,25 @@
 </template>
 
 <script type="text/ecmascript-6">
-  // const POSITIVE = 0;
-  // const NEGATIVE = 1;
+  const POSITIVE = 0;
+  const NEGATIVE = 1;
   const ALL = 2;
 
   export default {
     methods: {
-      select (type) {
+      select (type, event) {
+        if (!event._constructed) {
+          return;
+        }
         // this.selectType = type;
+        this.$emit('ratingtype-select', type);
+      },
+      toggleContent (event) {
+        if (!event._constructed) {
+          return;
+        }
+        // this.onlyContent = !this.onlyContent;
+        this.$emit('content-toggle', !this.onlyContent);
       }
     },
     props: {
@@ -51,6 +62,14 @@
           };
         }
       }
+    },
+    computed: {
+      positives () {
+        return this.ratings.filter(rating => rating.rateType === POSITIVE);
+      },
+      negatives () {
+        return this.ratings.filter(rating => rating.rateType === NEGATIVE);
+      }
     }
   };
 </script>
@@ -59,7 +78,6 @@
   @import "../../common/stylus/mixin.styl"
 
   .ratingselect
-    padding: 20px
     .rating-type
       padding: 18px 0
       margin: 0 18px
@@ -91,10 +109,19 @@
           &.active
             background-color: rgb(77, 85, 93)
 
-
     .switch
       padding: 12px 18px
       line-height: 24px
-      border-bottom: 1px solid rgba(7,17,27,0.1)
-      color: rgb(147,153,159)
+      border-bottom: 1px solid rgba(7, 17, 27, 0.1)
+      color: rgb(147, 153, 159)
+      font-size: 0
+      &.on
+        .icon-check_circle
+          color: #00c850
+      .icon-check_circle
+        display: inline-block
+        vertical-align: top
+        font-size: 24px
+      .text
+        font-size: 12px
 </style>

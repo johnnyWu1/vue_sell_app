@@ -8,4 +8,7 @@ Vue.use(VueRouter);
 Vue.use(VueResource);
 /* eslint-disable no-new */
 window.App = new Vue(App).$mount('#app');
-window.App.$router.replace('/goods');
+if (window.App.$router.currentRoute.path === '/') {
+  window.App.$router.replace('/goods');
+}
+
