@@ -12,16 +12,19 @@
         <router-link to="/seller">商家</router-link>
       </div>
     </div>
-    <router-view :seller="seller"></router-view>
+    <keep-alive>
+      <router-view :seller="seller"></router-view>
+    </keep-alive>
   </div>
 </template>
 
-<script  type="text/ecmascript-6">
+<script type="text/ecmascript-6">
   import Header from 'components/header/header';
   import Goods from 'components/goods/goods';
   import Seller from 'components/seller/seller';
   import Ratings from 'components/ratings/ratings';
   import VueRouter from 'vue-router';
+  import {urlParse} from 'common/js/util';
 
   const ERR_OK = 0;
 
@@ -29,14 +32,20 @@
     name: 'app',
     data () {
       return {
-        seller: {}
+        seller: {
+          id: (() => {
+            let queryParam = urlParse();
+            return queryParam.id || null;
+          })()
+        }
       };
     },
     created () {
-      this.$http.get('/api/seller').then((response) => {
+      this.$http.get('/api/seller?id=' + this.seller.id).then((response) => {
         var body = response.body;
         if (body.errno === ERR_OK) {
-          this.seller = body.data;
+          // this.seller = body.data;
+          this.seller = Object.assign({}, this.seller, body.data);
         }
       });
     },
@@ -63,9 +72,7 @@
     width: 100%
     height: 40px
     line-height: 40px
-    // border-bottom: 1px solid rgba(7, 17, 27, 0.1)
     border-1px(rgba(7, 17, 27, 0.1))
-
     .tab-item
       flex: 1
       text-align: center
