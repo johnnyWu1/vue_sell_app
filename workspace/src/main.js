@@ -6,9 +6,16 @@ import 'common/stylus/include.styl';
 
 Vue.use(VueRouter);
 Vue.use(VueResource);
+window.Vue = Vue;
 /* eslint-disable no-new */
-window.App = new Vue(App).$mount('#app');
-if (window.App.$router.currentRoute.path === '/') {
-  window.App.$router.replace('/goods');
-}
+new Vue({
+  el: '#app',
+  mounted () {
+    if (this.$router.currentRoute.path === '/') {
+      this.$router.replace('/goods');
+    }
+  },
+  ...App
+});
+// window.App = new Vue(App).$mount('#app');
 
